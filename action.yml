@@ -1,0 +1,17 @@
+name: syft-analyzer
+description: Syft Analyzer helps you monitor your analytics events during build time.
+inputs:
+  github_token:
+    description: "Github token to post a comment"
+    required: false
+  project_directory:
+    description: "Project Directory"
+    required: false
+    default: "."
+  output_directory:
+    description: "Output Directory to keep schema files"
+    required: false
+    default: "."
+runs:
+  using: node16
+  main: dist/index.js

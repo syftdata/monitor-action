@@ -1,0 +1,18 @@
+{
+  "name": "syft-cloud-action",
+  "version": "1.0.0",
+  "description": "Github action to setup syft cloud cli for testing and auto-instrumentation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^5.1.1",
+    "yaml": "^2.3.1"
+  }
+}
