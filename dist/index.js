@@ -6,6 +6,48 @@
 
 const { parse } = __nccwpck_require__(8578);
 
+function compareField(oldField, newField) {
+  if (oldField == null || newField == null) {
+    return null;
+  }
+  if (oldField.type !== newField.type) {
+    return oldField.name;
+  }
+  return null;
+}
+
+function compareSchema(oldSchema, newSchema) {
+  if (oldSchema == null || newSchema == null) {
+    return null;
+  }
+  const oldFields = oldSchema.fields.map((f) => f.name);
+  const newFields = newSchema.fields.map((f) => f.name);
+  const addedFields = newFields.filter((f) => !oldFields.includes(f));
+  const removedFields = oldFields.filter((f) => !newFields.includes(f));
+  const changedFields = newFields
+    .map((f) =>
+      compareField(
+        oldSchema.fields[oldFields.indexOf(f)],
+        newSchema.fields[newFields.indexOf(f)]
+      )
+    )
+    .filter((f) => f != null);
+
+  if (
+    addedFields.length > 0 ||
+    removedFields.length > 0 ||
+    changedFields.length > 0
+  ) {
+    return {
+      name: oldSchema.name,
+      addedFields,
+      removedFields,
+      changedFields,
+    };
+  }
+  return null;
+}
+
 // produces summary by comparing old and new schemas.
 function compareSchemas(oldSchema, newSchema) {
   const oldEvents = parse(oldSchema) ?? [];
@@ -18,30 +60,9 @@ function compareSchemas(oldSchema, newSchema) {
 
   const addedEvents = newEventNames.filter((e) => !oldEventNames.includes(e));
   const removedEvents = oldEventNames.filter((e) => !newEventNames.includes(e));
-  const changedEventNames = newEventNames.filter(
-    (e) => oldEventNames.includes(e) && newEventsMap[e] !== oldEventsMap[e]
-  );
-  const changedEvents = changedEventNames.map((e) => {
-    // get the fields that changed.
-    const oldEvent = oldEventsMap[e];
-    const newEvent = newEventsMap[e];
-    const oldFields = oldEvent.fields.map((f) => f.name);
-    const newFields = newEvent.fields.map((f) => f.name);
-    const addedFields = newFields.filter((f) => !oldFields.includes(f));
-    const removedFields = oldFields.filter((f) => !newFields.includes(f));
-    const changedFields = newFields.filter(
-      (f) =>
-        oldFields.includes(f) &&
-        newEvent.fields[newFields.indexOf(f)] !==
-          oldEvent.fields[oldFields.indexOf(f)]
-    );
-    return {
-      name: e,
-      addedFields,
-      removedFields,
-      changedFields,
-    };
-  });
+  const changedEvents = newEventNames
+    .map((e) => compareSchema(oldEventsMap.get(e), newEventsMap.get(e)))
+    .filter((e) => e != null);
 
   return {
     addedEvents,
@@ -133,7 +154,7 @@ ${diff.changedEvents
   .map(
     (e) =>
       `|${e.name}       | ${
-        e.addedFileds.length + e.removedFields.length + e.changedFields.length
+        e.addedFields.length + e.removedFields.length + e.changedFields.length
       } `
   )
   .join("\n")}
@@ -168,7 +189,6 @@ module.exports = setup;
 if (require.main === require.cache[eval('__filename')]) {
   setup();
 }
-
 
 
 /***/ }),

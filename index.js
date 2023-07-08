@@ -71,7 +71,7 @@ ${diff.changedEvents
   .map(
     (e) =>
       `|${e.name}       | ${
-        e.addedFileds.length + e.removedFields.length + e.changedFields.length
+        e.addedFields.length + e.removedFields.length + e.changedFields.length
       } `
   )
   .join("\n")}
@@ -106,4 +106,3 @@ module.exports = setup;
 if (require.main === module) {
   setup();
 }
-
