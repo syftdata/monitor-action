@@ -1,10 +1,15 @@
-# Syft Monitor Action
+# Event Analytics Monitoring Action
 
-The Syft Monitor Action is a GitHub action designed to analyze a codebase and extract event schemas from existing instrumentation. This action automates the process of extracting schemas and updating the events.yaml file. You can leverage this file to monitor changes, set up alerts, or require special approvals. For more information on code owners, refer to the [codeowners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
+This action monitors for any breaking changes to the analytics tracking code. With this action, product engineering teams can change tracking code with full transparency in collaboration with data consumers! 
+
+The action analyzes the code commits and shows possible breaking changes to the structure (schema) of analytics events. It currently supports Typescript projects that use the Segment, Amplitude, MixPanel, or Google Analytics analytics SDKs. Besides showing a summary of changes on the Pull Request, the action automatically extracts and stores the event schema in the `events.yaml` file in your repo. You can leverage this file to monitor changes, set up alerts, or require stakeholder approvals e.g. via a [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) file.
+
+![Screenshot: Summary of changes to Event Schema on a PR](.github/assets/screenshot-pr.png)
+![Screenshot: Event Schema file diff](.github/assets/screenshot-diff.png)
 
 ## Getting Started
 
-To get started, create a Github workflow file with the following contents, commit and push to the main branch:
+Create a Github workflow file in your repo at `.github/workflows/syft.yml` with the contents below and commit/push the change to the main branch. Now whenever Syft detects changes to the tracking instrumentation, it will alert you to schema changes on the Pull Request! 🚀 
 
 ```yaml
 on: [pull_request]
@@ -37,27 +42,25 @@ jobs:
           add: "events.yaml"
 ```
 
-## Customization
+## Configuration
 
-The action provides two optional parameters: `project_directory` and `output_directory`. By default, both parameters point to the root of your project folder.
+The action provides two optional parameters: `project_directory` and `output_directory`. By default, both parameters point to the root of your project directory.
 
 #### Project Directory
 
-If your project resides in a subfolder within the repository, you can customize the action using the `project_directory` parameter. For example, if your project is located under `packages/todo-app`, use the following code:
+If your project code resides in a subdirectory within the repository, you can customize the action using the `project_directory` parameter. For example, if your project is located under `packages/your-app`, change the workflow file to:
 
 ```yaml
 ---
 - name: Extract Schema
   uses: syftdata/monitor-action@v0.0.1
   with:
-    project_directory: packages/todo-app
+    project_directory: packages/your-app
 ```
 
 #### Output Directory
 
-If you prefer to generate the YAML file under a custom artifact folder or a folder that you are already monitoring, you can customize the action using the `output_directory` parameter.
-
-For instance, If you want the artifact to be placed under `artifacts/schemas/`, use the following code:
+If you prefer to store the event schema file under a custom artifact directory, you can customize the action using the `output_directory` parameter. For instance, if you want the artifact to be placed under `artifacts/schemas/`, modify the workflow file thus:
 
 ```yaml
 ---
@@ -69,30 +72,19 @@ For instance, If you want the artifact to be placed under `artifacts/schemas/`, 
 
 ## Monitoring
 
-To monitor the events.yaml file generated under the output_directory (by default, it is generated in the top folder), add a CODEOWNERS file.
+To notify stakeholders about changes to the events.yaml file that is generated under the output_directory, you can add a CODEOWNERS file.
 
-## Supported
+## Supported Analytics SDKs
 
-Syft Monitor Action supports the following libraries:
+The Action currently supports the following Analytics SDKs in TypeScript:
 
 - Amplitude
 - Segment
 - Mixpanel
 - Google Analytics
 
-## Contributing
+## Feedback and Contributions
+If you find this action useful, please ⭐️ the [github repo](https://github.com/syftdata/monitor-action). Please see the [CONTRIBUTING](CONTRIBUTING.md) guide to submit changes to the repo. For feature requests or bug reports, please open an issue in the github repository. For general feedback, please feel free to drop us a note at hello@syftdata.com! 👋 
 
-To contribute to Syft Monitor Action, follow the steps below:
-
-### Install Dependencies
-
-`npm i -g @vercel/ncc`
-`npm i`
-
-### Build
-
-`ncc build index.js --license licenses.txt`
-
-### Release
-
-create a new branch and push.
+## License
+Apache License 2.0
