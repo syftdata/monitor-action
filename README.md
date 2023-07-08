@@ -4,8 +4,7 @@ This action monitors for any breaking changes to the analytics tracking code. Wi
 
 The action analyzes the code commits and shows possible breaking changes to the structure (schema) of analytics events. It currently supports Typescript projects that use the Segment, Amplitude, MixPanel, or Google Analytics analytics SDKs. Besides showing a summary of changes on the Pull Request, the action automatically extracts and stores the event schema in the `events.yaml` file in your repo. You can leverage this file to monitor changes, set up alerts, or require stakeholder approvals e.g. via a [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) file.
 
-![Screenshot: Summary of changes to Event Schema on a PR](.github/assets/screenshot-pr.png)
-![Screenshot: Event Schema file diff](.github/assets/screenshot-diff.png)
+![Screenshot: Summary of changes to Event Schema on a PR + Event schema diff](.github/assets/screenshot.png)
 
 ## Getting Started
 
