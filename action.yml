@@ -1,5 +1,5 @@
-name: syft-analyzer
-description: Syft Analyzer helps you monitor your analytics events during build time.
+name: syft-event-analytics-monitor
+description: Monitor breaking changes to analytics tracking events in Typescript apps.
 inputs:
   github_token:
     description: "Github token to post a comment"
@@ -9,7 +9,7 @@ inputs:
     required: false
     default: "."
   output_directory:
-    description: "Output Directory to keep schema files"
+    description: "Output Directory to store event schema files"
     required: false
     default: "."
 runs:
